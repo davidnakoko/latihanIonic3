@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavController, AlertController, LoadingController } from 'ionic-angular';
+import { ProductProvider } from '../../providers/product/product';
 
 @Component({
   selector: 'page-home',
@@ -7,12 +8,55 @@ import { NavController } from 'ionic-angular';
 })
 export class HomePage {
 
-  constructor(public navCtrl: NavController) {
-
+  listItems: any[] ;
+  constructor(public navCtrl: NavController, 
+              public alertCtrl: AlertController, 
+              public loadingCtrl: LoadingController, 
+              private productSvc: ProductProvider) 
+  {
+    this.listItems = [];
+    this.loadData();
   }
 
-  gotoLogin(){
-    this.navCtrl.push('LoginPage');
+  async loadData(){
+    let loading = this.loadingCtrl.create({
+      content: 'Loading data product'
+    });
+    loading.present();
+    this.listItems = <any[]> await this.productSvc.getProducts();
+    loading.dismiss();
   }
 
+  tambah(){
+    let prompt = this.alertCtrl.create({
+      title : 'Input Product Baru',
+      inputs : [{
+        name : 'nama',
+        placeholder : 'Nama Product'
+      },{
+        name : 'harga',
+        placeholder : 'Harga Product',
+        type : 'number'
+      }],
+      buttons: [{
+        text : 'Cancel'
+      },{
+        text : 'Save',
+        handler : (data)=>{
+          this.simpan(data);
+        }
+      }]
+    });
+    prompt.present();
+  }
+
+  async simpan(data){
+    await this.productSvc.saveProduct(data);
+    this.loadData();
+  }
+
+  hapus(item){
+    this.listItems.splice(this.listItems.indexOf(item),1);
+  }
+  
 }
