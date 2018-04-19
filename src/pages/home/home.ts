@@ -15,6 +15,12 @@ export class HomePage {
               private productSvc: ProductProvider) 
   {
     this.listItems = [];
+
+    let login_key = localStorage.getItem("login_key");
+    if(!login_key){
+      this.navCtrl.setRoot('LoginPage');
+    }
+
     this.loadData();
   }
 

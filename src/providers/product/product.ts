@@ -16,14 +16,24 @@ export class ProductProvider {
   }
 
   async getProducts(){
-    let result = await this.http.get(this.alamatServer + 'products.php')
-      .toPromise();
-    return result;
+    try{
+      let result = await this.http.get(this.alamatServer + 'products.php')
+        .toPromise();
+      return result;
+    }
+    catch(ex){
+      return null;
+    }
   }
 
   async saveProduct(data){
-    await this.http.post(this.alamatServer + 'saveProduct.php', 
-      JSON.stringify(data) ).toPromise();
+    try{
+      await this.http.post(this.alamatServer + 'saveProduct.php', 
+        JSON.stringify(data) ).toPromise();
+    }
+    catch(ex){
+      
+    }
   }
 
 }

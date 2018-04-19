@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
+import { TabsPage } from '../tabs/tabs';
+import { LoginProvider } from '../../providers/login/login';
+
 
 /**
  * Generated class for the LoginPage page.
@@ -15,15 +18,38 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 })
 export class LoginPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  dataInput: any;
+  constructor(public navCtrl: NavController, public navParams: NavParams,
+              public alertCtrl: AlertController,
+              private loginSvc: LoginProvider) {
+    this.dataInput = {};
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad LoginPage');
   }
 
-  gotoDetail(){
-    this.navCtrl.push('DetailProfilPage');
+  async login(){
+    let res = await this.loginSvc.login(this.dataInput);
+    if(res["STATUS"]=='OK'){
+      //generate auth code
+
+      //save auth code ke local storage
+      localStorage.setItem('login_key', 'auth-code-sementara');
+      
+      this.navCtrl.setRoot(TabsPage);
+    }else{
+      this.alertCtrl.create({
+        title:'^_^ Login',
+        message: res['MESSAGE'],
+        buttons:["OKAY"]
+      }).present();
+      
+    }
+  }
+
+  register(){
+    this.navCtrl.push('RegisterPage');
   }
 
 }
