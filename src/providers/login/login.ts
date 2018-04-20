@@ -21,7 +21,9 @@ export class LoginProvider {
         JSON.stringify(data) ).toPromise();
       if(result['STATUS']=='OK'){
         //generate auth code
-
+        let login_key = result['CODE'];
+        localStorage.setItem('username', data.username);
+        localStorage.setItem('login_key', login_key);
         //save auth code local storage
       }
     }
@@ -33,6 +35,11 @@ export class LoginProvider {
   async login(data){
     let result = await this.http.post(this.alamatServer + 'login.php', 
       JSON.stringify(data)).toPromise();
+    //generate auth code
+    let login_key = result['CODE'];
+    localStorage.setItem('username', data.username);
+    localStorage.setItem('login_key', login_key);
+    //save auth code local storage
     return result;
   }
 

@@ -17,7 +17,7 @@ export class ProductProvider {
 
   async getProducts(){
     try{
-      let result = await this.http.get(this.alamatServer + 'products.php')
+      let result = await this.http.get(this.alamatServer + 'products.php?username=' + localStorage.getItem('username')+'&code='+localStorage.getItem('login_key'))
         .toPromise();
       return result;
     }

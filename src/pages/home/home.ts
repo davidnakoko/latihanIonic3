@@ -19,6 +19,7 @@ export class HomePage {
     let login_key = localStorage.getItem("login_key");
     if(!login_key){
       this.navCtrl.setRoot('LoginPage');
+      return;
     }
 
     this.loadData();
@@ -29,7 +30,12 @@ export class HomePage {
       content: 'Loading data product'
     });
     loading.present();
-    this.listItems = <any[]> await this.productSvc.getProducts();
+    let result = await this.productSvc.getProducts();
+    if(result['STATUS']=='OK'){
+      this.listItems = result['RESULT'];
+    }else{
+      this.navCtrl.setRoot('LoginPage');
+    }
     loading.dismiss();
   }
 
